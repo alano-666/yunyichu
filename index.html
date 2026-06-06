@@ -2,145 +2,222 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="云衣橱"/>
-<meta name="theme-color" content="#a1c4fd"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>云衣橱 · 网页版</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><text y='32' font-size='32'>🌤️</text></svg>"/>
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='36' fill='%23a1c4fd'/><text x='90' y='130' font-size='100' text-anchor='middle'>🌤️</text></svg>"/>
-<link rel="manifest" href="./manifest.json"/>
-<title>云衣橱</title>
 
 <style>
 /* ==========================================================
-   云衣橱 PWA — 主题、布局、组件样式
+   云衣橱 网页版 — 桌面/平板响应式布局
+   功能与手机版完全一致，适配宽屏
    ========================================================== */
 
 /* ---- 三套治愈系主题 ---- */
 :root,[data-theme="sky"]{
   --bg1:#eaf6ff;--bg2:#f5fbff;--pri:#7cc4ec;--prid:#5aa9d6;--ac:#a8d8ea;
   --ga:#a1c4fd;--gb:#c2e9fb;--card:#fff;--tx:#2d4a5e;--txs:#6f93a8;
-  --ln:#e3eef6;--sh:rgba(124,196,236,.22);
+  --ln:#e3eef6;--sh:rgba(124,196,236,.22);--sd-bg:#263b4a;
 }
 [data-theme="mint"]{
   --bg1:#e6f7f4;--bg2:#f4fcfa;--pri:#7fd1c4;--prid:#5cb8a9;--ac:#b3e6dd;
   --ga:#a8edea;--gb:#cdeff0;--card:#fff;--tx:#2c4f49;--txs:#6f9a93;
-  --ln:#e0f1ee;--sh:rgba(127,209,196,.22);
+  --ln:#e0f1ee;--sh:rgba(127,209,196,.22);--sd-bg:#1f3a35;
 }
 [data-theme="lavender"]{
   --bg1:#efecfb;--bg2:#f7f5fe;--pri:#a99ce6;--prid:#8b7bd6;--ac:#c9bff0;
   --ga:#c2b8f5;--gb:#dcd6f7;--card:#fff;--tx:#3d3760;--txs:#847caa;
-  --ln:#ece8f7;--sh:rgba(169,156,230,.22);
+  --ln:#ece8f7;--sh:rgba(169,156,230,.22);--sd-bg:#2a2548;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
-  background:#d8e9f5;color:var(--tx);
-  display:flex;justify-content:center;align-items:center;
-  min-height:100vh;min-height:100dvh;padding:12px;
-}
-.phone{
-  width:100%;max-width:390px;height:844px;max-height:calc(100dvh - 24px);
-  background:linear-gradient(170deg,var(--bg1),var(--bg2));
-  border-radius:36px;overflow:hidden;position:relative;
-  display:flex;flex-direction:column;
-  box-shadow:0 20px 50px rgba(80,120,150,.28),0 0 0 10px #fff,0 0 0 11px #e7eef3;
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  color:var(--tx);display:flex;overflow:hidden;
   transition:background .5s;
 }
-.statusbar{
-  height:44px;flex:0 0 44px;display:flex;align-items:center;
-  justify-content:space-between;padding:0 22px;
-  font-size:12px;font-weight:600;color:var(--tx);opacity:.8;
+
+/* ============ 侧边栏 ============ */
+.sidebar{
+  width:260px;flex:0 0 260px;background:var(--card);
+  display:flex;flex-direction:column;border-right:1px solid var(--ln);
+  box-shadow:2px 0 30px var(--sh);z-index:10;transition:background .5s;
 }
+.sd-logo{
+  padding:28px 24px 20px;text-align:center;
+  border-bottom:1px solid var(--ln);
+}
+.sd-logo .logo-icon{font-size:48px;display:block;}
+.sd-logo h1{font-size:22px;color:var(--tx);margin-top:4px;letter-spacing:2px;}
+.sd-logo .slogan{font-size:11px;color:var(--txs);margin-top:2px;}
+
+/* 侧边栏用户卡片 */
+.sd-user{
+  display:flex;align-items:center;gap:12px;padding:16px 20px;
+  border-bottom:1px solid var(--ln);
+}
+.sd-avt{
+  width:48px;height:48px;border-radius:50%;flex:0 0 48px;
+  background:linear-gradient(135deg,var(--ga),var(--gb));
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;overflow:hidden;cursor:pointer;position:relative;
+  box-shadow:0 3px 10px var(--sh);
+}
+.sd-avt img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.sd-avt .avt-tip{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.18);color:#fff;font-size:9px;font-weight:700;border-radius:50%;opacity:0;transition:opacity .2s;}
+.sd-avt:hover .avt-tip{opacity:1;}
+.sd-user .sd-uname{font-size:15px;font-weight:700;color:var(--tx);}
+.sd-user .sd-sub{font-size:11px;color:var(--txs);}
+
+/* 侧边栏导航 */
+.sd-nav{flex:1;padding:12px 12px;display:flex;flex-direction:column;gap:2px;}
+.sd-nav-item{
+  display:flex;align-items:center;gap:12px;padding:13px 16px;
+  border-radius:14px;cursor:pointer;font-size:14px;font-weight:600;
+  color:var(--txs);transition:all .2s;border:none;background:none;width:100%;text-align:left;
+  font-family:inherit;
+}
+.sd-nav-item:hover{background:var(--bg1);}
+.sd-nav-item.on{background:var(--pri);color:#fff;box-shadow:0 4px 14px var(--sh);}
+.sd-nav-item .nav-ic{font-size:20px;}
+
+/* 侧边栏底部 */
+.sd-foot{
+  padding:12px 16px;border-top:1px solid var(--ln);
+  display:flex;flex-direction:column;gap:8px;
+}
+.sd-foot .cloth-count{
+  font-size:11px;color:var(--txs);text-align:center;
+}
+.sd-foot .cloth-count b{color:var(--prid);font-size:16px;}
+.sd-foot .reset-btn{
+  font-size:11px;color:var(--txs);cursor:pointer;text-align:center;
+  background:none;border:none;padding:4px;font-family:inherit;
+  opacity:.6;transition:opacity .2s;
+}
+.sd-foot .reset-btn:hover{opacity:1;}
 
 /* 主题切换 */
 .themer{
-  position:absolute;top:48px;right:14px;z-index:50;display:flex;gap:7px;
-  background:rgba(255,255,255,.6);backdrop-filter:blur(8px);
-  padding:5px 7px;border-radius:18px;box-shadow:0 3px 12px var(--sh);
+  display:flex;gap:8px;justify-content:center;
+  padding:8px;background:var(--bg1);border-radius:16px;
 }
-.tdot{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.12);}
+.tdot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12);transition:transform .2s;}
+.tdot:hover{transform:scale(1.15);}
 .tdot.sky{background:linear-gradient(135deg,#a1c4fd,#c2e9fb);}
 .tdot.mint{background:linear-gradient(135deg,#a8edea,#cdeff0);}
 .tdot.lavender{background:linear-gradient(135deg,#c2b8f5,#dcd6f7);}
-.tdot.on{outline:2px solid var(--prid);outline-offset:1px;}
+.tdot.on{outline:2px solid var(--prid);outline-offset:2px;transform:scale(1.1);}
 
-/* 内容区 */
-.swrap{flex:1;overflow:hidden;position:relative;}
-.scr{
-  position:absolute;inset:0;overflow-y:auto;
-  padding:6px 16px 90px;opacity:0;pointer-events:none;
-  transform:translateY(8px);transition:opacity .32s,transform .32s;
+/* ============ 主内容区 ============ */
+.main{
+  flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;
 }
-.scr.on{opacity:1;pointer-events:auto;transform:translateY(0);}
-.scr::-webkit-scrollbar{width:0;}
+.page-header{
+  padding:20px 32px 12px;flex:0 0 auto;
+  border-bottom:1px solid var(--ln);
+  background:rgba(255,255,255,.3);backdrop-filter:blur(8px);
+}
+.page-header h2{font-size:22px;font-weight:800;color:var(--tx);}
+.page-header p{font-size:13px;color:var(--txs);margin-top:2px;}
 
-/* 通用 */
-.tt{font-size:20px;font-weight:800;margin:6px 2px 2px;}
-.st{font-size:12.5px;color:var(--txs);margin:0 2px 14px;}
+/* 内容滚动区 */
+.content{
+  flex:1;overflow-y:auto;padding:24px 32px 32px;
+}
+.content::-webkit-scrollbar{width:6px;}
+.content::-webkit-scrollbar-track{background:transparent;}
+.content::-webkit-scrollbar-thumb{background:var(--ac);border-radius:3px;}
+
+/* Tab 面板 */
+.tab-panel{display:none;}
+.tab-panel.on{display:flex;flex-direction:column;height:100%;overflow:hidden;}
 
 /* ============ Tab1 · 我的衣橱 ============ */
 .pcard{
   background:linear-gradient(140deg,var(--ga),var(--gb));
-  border-radius:24px;padding:20px 18px;display:flex;align-items:center;gap:14px;
-  box-shadow:0 10px 26px var(--sh);margin-bottom:14px;position:relative;overflow:hidden;
+  border-radius:24px;padding:28px 24px;display:flex;align-items:center;gap:20px;
+  box-shadow:0 10px 30px var(--sh);margin-bottom:20px;position:relative;overflow:hidden;
 }
-.pcard::after{content:"";position:absolute;right:-24px;top:-24px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.22);}
-.avt{
-  width:70px;height:70px;border-radius:50%;flex:0 0 70px;
+.pcard::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.18);}
+.pcard .avt-big{
+  width:80px;height:80px;border-radius:50%;flex:0 0 80px;
   background:rgba(255,255,255,.85);
   display:flex;align-items:center;justify-content:center;
-  font-size:36px;overflow:hidden;cursor:pointer;
-  box-shadow:0 5px 14px rgba(0,0,0,.1);
-  position:relative;
+  font-size:40px;overflow:hidden;cursor:pointer;position:relative;
+  box-shadow:0 6px 18px rgba(0,0,0,.12);z-index:1;
 }
-.avt img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.avt .avt-tip{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.18);color:#fff;font-size:10px;font-weight:700;border-radius:50%;opacity:0;transition:opacity .2s;}
-.avt:active .avt-tip{opacity:1;}
-.pinfo h2{font-size:18px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.1);}
-.pinfo p{font-size:11.5px;color:rgba(255,255,255,.9);margin-top:3px;}
-.ftags{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;}.ftags::-webkit-scrollbar{height:0;}
+.pcard .avt-big img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.pcard .avt-big .avt-tip{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.18);color:#fff;font-size:10px;font-weight:700;border-radius:50%;opacity:0;transition:opacity .2s;}
+.pcard .avt-big:hover .avt-tip{opacity:1;}
+.pinfo{z-index:1;}
+.pinfo h2{font-size:22px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.1);cursor:text;outline:none;}
+.pinfo p{font-size:13px;color:rgba(255,255,255,.9);margin-top:4px;}
+.pinfo .chips-row{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;}
+.pinfo .chips-row .chip{
+  display:inline-block;font-size:11px;font-weight:600;
+  padding:5px 12px;border-radius:12px;
+}
+.pinfo .chips-row .chip.count-chip{color:var(--prid);background:rgba(255,255,255,.9);}
+.pinfo .chips-row .chip.reset-chip{color:var(--txs);background:rgba(255,255,255,.6);cursor:pointer;font-size:10px;}
+
+/* 分类筛选 */
+.ftags{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
 .chip{
   flex:0 0 auto;background:var(--card);color:var(--txs);
-  border:1.5px solid var(--ln);padding:6px 13px;border-radius:15px;
-  font-size:12.5px;font-weight:600;cursor:pointer;transition:all .2s;
+  border:1.5px solid var(--ln);padding:8px 16px;border-radius:16px;
+  font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;
 }
-.chip.on{background:var(--pri);color:#fff;border-color:var(--pri);box-shadow:0 3px 10px var(--sh);}
+.chip:hover{background:var(--bg1);}
+.chip.on{background:var(--pri);color:#fff;border-color:var(--pri);box-shadow:0 4px 14px var(--sh);}
 
-.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+/* 衣服网格 — 响应式列数 */
+.cgrid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+}
+@media(min-width:1400px){.cgrid{grid-template-columns:repeat(5,1fr);}}
+@media(max-width:1000px){.cgrid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:700px){.cgrid{grid-template-columns:repeat(2,1fr);}}
+
 .cloth{
-  background:var(--card);border-radius:16px;padding:9px;text-align:center;
-  box-shadow:0 5px 14px var(--sh);cursor:pointer;transition:transform .15s;
+  background:var(--card);border-radius:18px;padding:12px;text-align:center;
+  box-shadow:0 5px 16px var(--sh);cursor:pointer;transition:transform .15s,box-shadow .15s;
   position:relative;
 }
-.cloth:active{transform:scale(.94);}
+.cloth:hover{transform:translateY(-3px);box-shadow:0 8px 24px var(--sh);}
+.cloth:active{transform:scale(.96);}
 .cloth .thumb{
-  width:100%;aspect-ratio:1;border-radius:10px;
+  width:100%;aspect-ratio:1;border-radius:12px;
   display:flex;align-items:center;justify-content:center;
-  font-size:34px;overflow:hidden;margin-bottom:6px;
+  font-size:40px;overflow:hidden;margin-bottom:8px;
 }
-.cloth .thumb img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
-.cloth .name{font-size:11px;font-weight:600;color:var(--tx);}
-.cloth .tag{font-size:9px;color:var(--txs);margin-top:1px;}
+.cloth .thumb img{width:100%;height:100%;object-fit:cover;border-radius:12px;}
+.cloth .name{font-size:12px;font-weight:700;color:var(--tx);}
+.cloth .tag{font-size:10px;color:var(--txs);margin-top:2px;}
 .cloth.add{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   border:2px dashed var(--ac);background:rgba(255,255,255,.5);box-shadow:none;
-  color:var(--prid);min-height:132px;
+  color:var(--prid);min-height:160px;
 }
-.cloth.add .plus{font-size:28px;line-height:1;}
-.cloth.add .t{font-size:11px;font-weight:700;margin-top:4px;}
+.cloth.add:hover{box-shadow:0 5px 16px var(--sh);}
+.cloth.add .plus{font-size:32px;line-height:1;}
+.cloth.add .t{font-size:12px;font-weight:700;margin-top:6px;}
 
 /* ============ Tab2 · AI 穿搭 ============ */
-.chat{display:flex;flex-direction:column;gap:10px;padding-bottom:6px;}
-.bub{max-width:82%;padding:11px 14px;border-radius:17px;font-size:13.5px;line-height:1.5;box-shadow:0 3px 10px var(--sh);}
+.ai-layout{display:flex;gap:24px;height:100%;}
+.ai-chat-area{flex:1;display:flex;flex-direction:column;min-width:0;}
+.ai-sidebar{width:280px;flex:0 0 280px;}
+@media(max-width:900px){.ai-layout{flex-direction:column;}.ai-sidebar{width:100%;flex:0 0 auto;}}
+
+.chat{display:flex;flex-direction:column;gap:12px;padding-bottom:6px;flex:1;}
+.bub{max-width:70%;padding:12px 16px;border-radius:18px;font-size:14px;line-height:1.6;box-shadow:0 3px 10px var(--sh);}
 .bub.ai{align-self:flex-start;background:var(--card);color:var(--tx);border-bottom-left-radius:4px;}
 .bub.me{align-self:flex-end;background:linear-gradient(135deg,var(--ga),var(--gb));color:#fff;border-bottom-right-radius:4px;}
 
 .ocard{
-  align-self:flex-start;width:88%;background:var(--card);
-  border-radius:18px;overflow:hidden;box-shadow:0 7px 20px var(--sh);
+  align-self:flex-start;width:65%;background:var(--card);
+  border-radius:18px;overflow:hidden;box-shadow:0 7px 24px var(--sh);
 }
 .oimg{
   width:100%;aspect-ratio:4/5;
@@ -150,209 +227,282 @@ body{
 }
 .oimg .big{font-size:56px;}
 .oimg .cap{font-size:11px;opacity:.92;}
-.oinfo{padding:11px 13px;}
-.oinfo .ti{font-size:13.5px;font-weight:700;}
-.oinfo .its{font-size:11.5px;color:var(--txs);margin-top:4px;line-height:1.5;}
-.oact{display:flex;gap:7px;margin-top:10px;}
+.oinfo{padding:14px 16px;}
+.oinfo .ti{font-size:14px;font-weight:700;}
+.oinfo .its{font-size:12px;color:var(--txs);margin-top:6px;line-height:1.6;}
+.oact{display:flex;gap:8px;margin-top:12px;}
 .minib{
-  flex:1;text-align:center;font-size:11.5px;font-weight:700;
-  padding:7px;border-radius:11px;cursor:pointer;
+  flex:1;text-align:center;font-size:12px;font-weight:700;
+  padding:9px;border-radius:12px;cursor:pointer;
   background:var(--bg1);color:var(--prid);border:1.5px solid var(--ln);
+  transition:all .2s;
 }
+.minib:hover{background:var(--pri);color:#fff;border-color:var(--pri);}
 .minib.f{background:var(--pri);color:#fff;border-color:var(--pri);}
+.minib.f:hover{background:var(--prid);}
 
-/* 加载 */
-.ld{align-self:flex-start;display:flex;align-items:center;gap:9px;background:var(--card);padding:12px 16px;border-radius:16px;box-shadow:0 3px 10px var(--sh);font-size:12.5px;color:var(--txs);}
-.ld .b{width:12px;height:12px;border-radius:50%;background:var(--pri);animation:br 1.3s ease-in-out infinite;}
+/* 加载动画 */
+.ld{align-self:flex-start;display:flex;align-items:center;gap:10px;background:var(--card);padding:14px 18px;border-radius:16px;box-shadow:0 3px 10px var(--sh);font-size:13px;color:var(--txs);}
+.ld .b{width:14px;height:14px;border-radius:50%;background:var(--pri);animation:br 1.3s ease-in-out infinite;}
 @keyframes br{0%,100%{transform:scale(.5);opacity:.35;}50%{transform:scale(1.05);opacity:1;}}
 
-.qr{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 8px;}
-.q{font-size:12px;font-weight:600;background:rgba(255,255,255,.7);color:var(--prid);border:1.5px solid var(--ln);padding:6px 11px;border-radius:13px;cursor:pointer;}
+/* 快捷提问 */
+.quick-asks{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 5px 16px var(--sh);}
+.quick-asks h4{font-size:14px;color:var(--tx);margin-bottom:12px;}
+.qr{display:flex;flex-direction:column;gap:8px;}
+.q{
+  font-size:13px;font-weight:600;background:var(--bg1);color:var(--prid);
+  border:1.5px solid var(--ln);padding:10px 14px;border-radius:14px;cursor:pointer;
+  text-align:left;transition:all .2s;
+}
+.q:hover{background:var(--pri);color:#fff;border-color:var(--pri);}
 
+/* 聊天输入 */
 .cibar{
-  position:absolute;left:0;right:0;bottom:76px;
-  padding:6px 14px;display:none;gap:8px;
+  padding:12px 0 0;display:flex;gap:10px;
+  border-top:1px solid var(--ln);margin-top:12px;
 }
 .cibar input{
   flex:1;border:1.5px solid var(--ln);background:var(--card);
-  border-radius:20px;padding:11px 15px;font-size:14px;outline:none;color:var(--tx);
-  box-shadow:0 3px 12px var(--sh);
+  border-radius:22px;padding:12px 18px;font-size:14px;outline:none;color:var(--tx);
+  box-shadow:0 3px 12px var(--sh);font-family:inherit;
+  transition:border-color .2s;
 }
+.cibar input:focus{border-color:var(--pri);}
 .cibar button{
-  flex:0 0 42px;background:var(--pri);color:#fff;border:none;
-  border-radius:50%;font-size:17px;cursor:pointer;box-shadow:0 3px 12px var(--sh);
+  flex:0 0 48px;background:var(--pri);color:#fff;border:none;
+  border-radius:50%;font-size:18px;cursor:pointer;box-shadow:0 3px 12px var(--sh);
+  transition:background .2s;
 }
+.cibar button:hover{background:var(--prid);}
 
 /* ============ Tab3 · 社区 ============ */
-.post{
-  background:var(--card);border-radius:18px;padding:14px;margin-bottom:14px;
-  box-shadow:0 5px 16px var(--sh);
+.post-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:20px;
 }
-.post .phead{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.post .pavt{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--ga);}
-.post .pname{font-size:13px;font-weight:700;}
-.post .ptime{font-size:10.5px;color:var(--txs);}
-.post .pbody{font-size:13px;line-height:1.6;margin-bottom:8px;}
+@media(max-width:900px){.post-grid{grid-template-columns:1fr;}}
+
+.post{
+  background:var(--card);border-radius:20px;padding:18px;
+  box-shadow:0 5px 18px var(--sh);transition:transform .2s;
+}
+.post:hover{transform:translateY(-2px);}
+.post .phead{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.post .pavt{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(135deg,var(--ga),var(--gb));overflow:hidden;}
+.post .pavt img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.post .pname{font-size:14px;font-weight:700;}
+.post .ptime{font-size:11px;color:var(--txs);}
+.post .pbody{font-size:14px;line-height:1.6;margin-bottom:10px;}
 .post .pimg{
   width:100%;aspect-ratio:4/5;border-radius:14px;overflow:hidden;
-  background:linear-gradient(160deg,var(--ga),var(--gb));margin-bottom:8px;
-  display:flex;align-items:center;justify-content:center;font-size:48px;color:#fff;
+  background:linear-gradient(160deg,var(--ga),var(--gb));margin-bottom:10px;
+  display:flex;align-items:center;justify-content:center;font-size:56px;color:#fff;
 }
-.post .pitems{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.post .pimg img{width:100%;height:100%;object-fit:cover;}
+.post .pitems{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
 .post .pi{
-  font-size:10.5px;background:var(--bg1);color:var(--prid);
-  padding:4px 8px;border-radius:9px;font-weight:600;
+  font-size:11px;background:var(--bg1);color:var(--prid);
+  padding:5px 10px;border-radius:10px;font-weight:600;
 }
-.post .pbtns{display:flex;gap:18px;}
+.post .pbtns{display:flex;gap:20px;}
 .post .pbtn{
-  font-size:12px;font-weight:600;color:var(--txs);cursor:pointer;
-  display:flex;align-items:center;gap:4px;transition:color .2s;
-  background:none;border:none;padding:0;
+  font-size:13px;font-weight:600;color:var(--txs);cursor:pointer;
+  display:flex;align-items:center;gap:5px;transition:color .2s;
+  background:none;border:none;padding:0;font-family:inherit;
 }
+.post .pbtn:hover{color:var(--prid);}
 .post .pbtn.liked{color:#e88;}
 
-/* 评论展开 */
-.cms{padding-top:10px;margin-top:8px;border-top:1px solid var(--ln);display:none;}
+/* 评论 */
+.cms{padding-top:12px;margin-top:10px;border-top:1px solid var(--ln);display:none;}
 .cms.show{display:block;}
-.cm{font-size:12px;padding:5px 0;color:var(--tx);}
+.cm{font-size:13px;padding:6px 0;color:var(--tx);}
 .cm .cname{font-weight:700;}
-.cminp{display:flex;gap:6px;margin-top:6px;}
+.cminp{display:flex;gap:8px;margin-top:8px;}
 .cminp input{
-  flex:1;border:1.5px solid var(--ln);border-radius:12px;
-  padding:7px 10px;font-size:12px;outline:none;color:var(--tx);
+  flex:1;border:1.5px solid var(--ln);border-radius:14px;
+  padding:8px 12px;font-size:13px;outline:none;color:var(--tx);
+  font-family:inherit;
 }
+.cminp input:focus{border-color:var(--pri);}
 .cminp button{
-  background:var(--pri);color:#fff;border:none;border-radius:12px;
-  padding:7px 13px;font-size:11px;font-weight:700;cursor:pointer;
+  background:var(--pri);color:#fff;border:none;border-radius:14px;
+  padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;
+  transition:background .2s;
 }
-
-/* ============ 底部导航 ============ */
-.tabbar{
-  position:absolute;left:0;right:0;bottom:0;height:70px;
-  background:rgba(255,255,255,.82);backdrop-filter:blur(14px);
-  border-top:1px solid var(--ln);display:flex;padding-bottom:4px;
-}
-.tab{
-  flex:1;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:2px;cursor:pointer;
-  color:var(--txs);font-size:10.5px;font-weight:600;transition:color .2s;
-}
-.tab .ic{font-size:20px;transition:transform .2s;}
-.tab.on{color:var(--prid);}.tab.on .ic{transform:translateY(-2px) scale(1.1);}
+.cminp button:hover{background:var(--prid);}
 
 /* ============ 登录页 ============ */
 .wc{
-  position:absolute;inset:0;z-index:100;
+  position:fixed;inset:0;z-index:1000;
   background:linear-gradient(165deg,var(--ga),var(--gb));
   display:flex;flex-direction:column;align-items:center;
   justify-content:center;text-align:center;padding:40px 30px;
   transition:opacity .5s,transform .5s;
 }
 .wc.hide{opacity:0;transform:scale(1.03);pointer-events:none;}
-.wc .logo{font-size:68px;margin-bottom:6px;}
-.wc h1{font-size:28px;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.12);letter-spacing:2px;}
-.wc .slo{font-size:13px;color:rgba(255,255,255,.93);margin:8px 0 32px;}
-.wc input{width:100%;border:none;border-radius:16px;padding:14px 16px;font-size:15px;text-align:center;letter-spacing:2px;outline:none;color:var(--tx);box-shadow:0 6px 20px rgba(0,0,0,.12);}
-.wc .ebtn{width:100%;margin-top:12px;background:#fff;color:var(--prid);border:none;border-radius:16px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.14);}
-.wc .hint{font-size:11.5px;color:rgba(255,255,255,.82);margin-top:14px;}
+.wc .logo{font-size:80px;margin-bottom:8px;}
+.wc h1{font-size:36px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.12);letter-spacing:3px;}
+.wc .slo{font-size:15px;color:rgba(255,255,255,.93);margin:10px 0 40px;}
+.wc .form-box{width:100%;max-width:360px;}
+.wc input{
+  width:100%;border:none;border-radius:18px;padding:16px 20px;font-size:16px;
+  text-align:center;letter-spacing:2px;outline:none;color:var(--tx);
+  box-shadow:0 8px 24px rgba(0,0,0,.14);
+}
+.wc .ebtn{
+  width:100%;margin-top:14px;background:#fff;color:var(--prid);
+  border:none;border-radius:18px;padding:16px;font-size:16px;font-weight:800;
+  cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.16);
+  transition:transform .2s,box-shadow .2s;
+}
+.wc .ebtn:hover{transform:translateY(-1px);box-shadow:0 10px 30px rgba(0,0,0,.2);}
+.wc .hint{font-size:12px;color:rgba(255,255,255,.82);margin-top:16px;}
 
-/* ============ 弹窗 ============ */
+/* ============ 弹窗（模态对话框） ============ */
 .ov{
-  position:absolute;inset:0;z-index:80;
-  background:rgba(0,0,0,.35);display:none;
-  align-items:flex-end;justify-content:center;
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.4);display:none;
+  align-items:center;justify-content:center;
 }
 .ov.show{display:flex;}
 .mo{
-  width:100%;max-width:390px;background:var(--card);border-radius:24px 24px 0 0;
-  padding:20px 18px 32px;max-height:80vh;overflow-y:auto;
-  animation:su .3s ease;
-  display:flex;flex-direction:column;
+  width:100%;max-width:480px;max-height:85vh;
+  background:var(--card);border-radius:20px;
+  padding:24px;overflow-y:auto;margin:20px;
+  animation:moIn .25s ease;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
 }
-.mo .mo-scroll{flex:1;overflow-y:auto;}
-.mo .mo-foot{flex:0 0 auto;padding-top:10px;position:sticky;bottom:0;background:var(--card);}
-@keyframes su{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.mo h3{font-size:17px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
-.mo h3 .cls{font-size:22px;cursor:pointer;color:var(--txs);background:none;border:none;padding:0 4px;}
-.mo .row{display:flex;flex-direction:column;gap:4px;margin-bottom:11px;}
+@keyframes moIn{from{opacity:0;transform:translateY(20px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+.mo h3{font-size:18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
+.mo h3 .cls{font-size:24px;cursor:pointer;color:var(--txs);background:none;border:none;padding:0 4px;transition:color .2s;}
+.mo h3 .cls:hover{color:var(--tx);}
+.mo .row{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
 .mo label{font-size:12px;font-weight:700;color:var(--txs);}
 .mo input,.mo select,.mo textarea{
-  border:1.5px solid var(--ln);border-radius:12px;padding:10px 12px;
+  border:1.5px solid var(--ln);border-radius:14px;padding:11px 14px;
   font-size:14px;outline:none;color:var(--tx);background:var(--bg1);
-  width:100%;font-family:inherit;
+  width:100%;font-family:inherit;transition:border-color .2s;
 }
-.mo textarea{min-height:60px;resize:vertical;}
+.mo input:focus,.mo select:focus,.mo textarea:focus{border-color:var(--pri);}
+.mo textarea{min-height:70px;resize:vertical;}
 .mo .imgup{
-  width:100%;height:120px;border:2px dashed var(--ac);border-radius:14px;
+  width:100%;height:140px;border:2px dashed var(--ac);border-radius:16px;
   display:flex;align-items:center;justify-content:center;cursor:pointer;
-  font-size:14px;color:var(--prid);background:var(--bg1);overflow:hidden;
+  font-size:15px;color:var(--prid);background:var(--bg1);overflow:hidden;
+  transition:border-color .2s,background .2s;
 }
-.mo .imgup img{width:100%;height:100%;object-fit:cover;border-radius:12px;}
+.mo .imgup:hover{border-color:var(--pri);background:var(--bg2);}
+.mo .imgup img{width:100%;height:100%;object-fit:cover;border-radius:14px;}
 .mo .saveb{
-  width:100%;margin-top:10px;background:var(--pri);color:#fff;
-  border:none;border-radius:14px;padding:13px;font-size:15px;font-weight:800;cursor:pointer;
+  width:100%;margin-top:12px;background:var(--pri);color:#fff;
+  border:none;border-radius:16px;padding:14px;font-size:15px;font-weight:800;
+  cursor:pointer;transition:background .2s;font-family:inherit;
 }
+.mo .saveb:hover{background:var(--prid);}
 
-/* Toast */
+/* ============ Toast ============ */
 .toast{
-  position:absolute;left:50%;bottom:100px;transform:translateX(-50%) translateY(10px);
-  background:rgba(45,74,94,.92);color:#fff;font-size:12.5px;
-  padding:9px 16px;border-radius:12px;opacity:0;pointer-events:none;
-  transition:all .3s;z-index:90;white-space:nowrap;
+  position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);
+  background:rgba(45,74,94,.92);color:#fff;font-size:13px;
+  padding:10px 20px;border-radius:14px;opacity:0;pointer-events:none;
+  transition:all .3s;z-index:600;white-space:nowrap;
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-/* 响应式: 宽屏居中缩小 */
-@media(min-width:600px){
-  body{padding:24px;}
-  .phone{max-width:390px;}
+/* ============ 响应式: 小屏折叠侧边栏 ============ */
+@media(max-width:768px){
+  .sidebar{width:72px;flex:0 0 72px;}
+  .sd-logo{padding:16px 8px 12px;}
+  .sd-logo .logo-icon{font-size:28px;}
+  .sd-logo h1{display:none;}
+  .sd-logo .slogan{display:none;}
+  .sd-user{padding:10px 8px;flex-direction:column;gap:4px;}
+  .sd-avt{width:36px;height:36px;flex:0 0 36px;font-size:18px;}
+  .sd-user .sd-uname{font-size:10px;text-align:center;}
+  .sd-user .sd-sub{display:none;}
+  .sd-nav{padding:8px 6px;}
+  .sd-nav-item{justify-content:center;padding:12px 8px;font-size:11px;flex-direction:column;gap:4px;}
+  .sd-nav-item .nav-ic{font-size:18px;}
+  .sd-foot{padding:8px;}
+  .sd-foot .cloth-count{font-size:10px;}
+  .sd-foot .cloth-count b{font-size:13px;}
+  .sd-foot .reset-btn{font-size:9px;}
+  .themer{gap:6px;padding:6px;flex-wrap:wrap;}
+  .tdot{width:16px;height:16px;}
+  .content{padding:16px;}
+  .page-header{padding:14px 16px 10px;}
+  .page-header h2{font-size:18px;}
+  .cgrid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .post-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
-<div class="phone" data-theme="sky" id="phone">
-
-  <!-- 登录页 -->
-  <div class="wc" id="wc">
-    <div class="logo">🌤️</div><h1>云衣橱</h1>
-    <div class="slo">把每一天的好心情，穿在身上</div>
+<!-- ============ 登录页 ============ -->
+<div class="wc" id="wc">
+  <div class="logo">🌤️</div><h1>云衣橱</h1>
+  <div class="slo">把每一天的好心情，穿在身上</div>
+  <div class="form-box">
     <input id="invInp" placeholder="输入邀请码" value="YUNYI2026"/>
     <button class="ebtn" onclick="enterApp()">进入云衣橱</button>
-    <div class="hint">小圈子内测中 · 邀请码已预填 ✨</div>
+  </div>
+  <div class="hint">小圈子内测中 · 邀请码已预填 ✨</div>
+</div>
+
+<!-- ============ 侧边栏 ============ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sd-logo">
+    <span class="logo-icon">🌤️</span>
+    <h1>云衣橱</h1>
+    <div class="slogan">把好心情穿在身上</div>
   </div>
 
-  <!-- 状态条 -->
-  <div class="statusbar"><span>9:41</span><span>云衣橱</span><span>📶 🔋</span></div>
-
-  <!-- 主题切换 -->
-  <div class="themer">
-    <div class="tdot sky on" onclick="setTheme('sky',this)"></div>
-    <div class="tdot mint" onclick="setTheme('mint',this)"></div>
-    <div class="tdot lavender" onclick="setTheme('lavender',this)"></div>
+  <div class="sd-user">
+    <div class="sd-avt" id="sdAvatar" onclick="uploadAvatar()" title="更换形象">
+      <span id="sdAvtEmoji">🧍‍♀️</span>
+      <img id="sdAvtImg" style="display:none"/>
+      <div class="avt-tip">更换</div>
+    </div>
+    <div>
+      <div class="sd-uname" id="sdUname" contenteditable="true">小晴</div>
+      <div class="sd-sub">今天也要美美哒 ☁️</div>
+    </div>
   </div>
 
-  <!-- 内容区 -->
-  <div class="swrap">
+  <nav class="sd-nav">
+    <button class="sd-nav-item on" data-t="s1" onclick="switchTab('s1',this)">
+      <span class="nav-ic">👗</span><span>我的衣橱</span>
+    </button>
+    <button class="sd-nav-item" data-t="s2" onclick="switchTab('s2',this)">
+      <span class="nav-ic">✨</span><span>AI 穿搭</span>
+    </button>
+    <button class="sd-nav-item" data-t="s3" onclick="switchTab('s3',this)">
+      <span class="nav-ic">🌷</span><span>穿搭广场</span>
+    </button>
+  </nav>
 
-    <!-- ===== Tab1 我的衣橱 ===== -->
-    <section class="scr on" id="s1">
-      <div class="pcard">
-        <div class="avt" id="avatar" onclick="uploadAvatar()">
-          <span id="avtEmoji">🧍‍♀️</span>
-          <img id="avtImg" style="display:none"/>
-          <div class="avt-tip">更换形象</div>
-        </div>
-        <div class="pinfo">
-          <h2 id="uname" contenteditable="true">小晴</h2>
-          <p>今天也要美美哒 ☁️</p>
-          <span class="chip" style="display:inline-block;margin-top:6px;color:var(--prid);background:rgba(255,255,255,.9);">
-            衣橱 <span id="clothCount">0</span> 件单品
-          </span>
-          <span class="chip" style="display:inline-block;margin-top:6px;margin-left:4px;color:var(--txs);background:rgba(255,255,255,.6);cursor:pointer;font-size:10px;" onclick="resetAllData()" title="重新载入演示数据">🔧 重置</span>
-        </div>
-      </div>
+  <div class="sd-foot">
+    <div class="cloth-count">衣橱 <b id="clothCount">0</b> 件单品</div>
+    <div class="themer">
+      <div class="tdot sky on" onclick="setTheme('sky',this)" title="天空蓝"></div>
+      <div class="tdot mint" onclick="setTheme('mint',this)" title="薄荷绿"></div>
+      <div class="tdot lavender" onclick="setTheme('lavender',this)" title="薰衣草紫"></div>
+    </div>
+    <button class="reset-btn" onclick="resetAllData()">🔧 重置演示数据</button>
+  </div>
+</aside>
 
+<!-- ============ 主内容区 ============ -->
+<main class="main">
+  <!-- Tab1 我的衣橱 -->
+  <div class="tab-panel on" id="s1">
+    <div class="page-header">
+      <h2>👗 我的衣橱</h2>
+      <p>管理你的每一件心爱单品</p>
+    </div>
+    <div class="content">
       <div class="ftags" id="ftags">
         <div class="chip on" onclick="renderCloset('全部',this)">全部</div>
         <div class="chip" onclick="renderCloset('上衣',this)">上衣</div>
@@ -361,103 +511,99 @@ body{
         <div class="chip" onclick="renderCloset('鞋',this)">鞋</div>
         <div class="chip" onclick="renderCloset('配饰',this)">配饰</div>
       </div>
-
       <div class="cgrid" id="cgrid"></div>
-    </section>
-
-    <!-- ===== Tab2 AI 穿搭 ===== -->
-    <section class="scr" id="s2">
-      <h1 class="tt">AI 穿搭师 ✨</h1>
-      <p class="st">用你自己的话，让我从你的衣橱里搭配一套</p>
-      <div class="qr">
-        <div class="q" onclick="askAI('明天约会，帮我搭温柔一点的')">💕 约会温柔风</div>
-        <div class="q" onclick="askAI('下雨天通勤，要清爽好走')">🌧️ 雨天通勤</div>
-        <div class="q" onclick="askAI('周末出去玩，活泼一点')">🎈 周末出游</div>
-        <div class="q" onclick="askAI('参加朋友婚礼，要精致好看')">💒 参加婚礼</div>
-      </div>
-      <div class="chat" id="chat">
-        <div class="bub ai">嗨，我是你的 AI 穿搭师 ☁️<br/>告诉我今天要去什么场合、想要什么风格，我从你的衣橱里帮你搭配～</div>
-      </div>
-    </section>
-
-    <!-- ===== Tab3 社区 ===== -->
-    <section class="scr" id="s3">
-      <h1 class="tt" style="margin-bottom:2px;">穿搭广场 🌷</h1>
-      <p class="st">分享你的穿搭，一起变美</p>
-      <div id="postFeed"></div>
-    </section>
-  </div>
-
-  <!-- 聊天输入（Tab2） -->
-  <div class="cibar" id="cibar">
-    <input id="ci" placeholder="和 AI 说说今天想穿什么…" onkeydown="if(event.key==='Enter')sendMsg()"/>
-    <button onclick="sendMsg()">↑</button>
-  </div>
-
-  <!-- 底部导航 -->
-  <nav class="tabbar">
-    <div class="tab on" data-t="s1" onclick="switchTab('s1',this)"><span class="ic">👗</span><span>我的衣橱</span></div>
-    <div class="tab" data-t="s2" onclick="switchTab('s2',this)"><span class="ic">✨</span><span>AI 穿搭</span></div>
-    <div class="tab" data-t="s3" onclick="switchTab('s3',this)"><span class="ic">🌷</span><span>社区</span></div>
-  </nav>
-
-  <!-- ===== 弹窗：添加衣服 ===== -->
-  <div class="ov" id="ovCloth">
-    <div class="mo">
-      <div class="mo-scroll">
-        <h3>➕ 添加单品 <button class="cls" onclick="closeOv('ovCloth')">✕</button></h3>
-        <div class="imgup" onclick="document.getElementById('clothImgInp').click()" id="clothImgPrev">📸 点击上传衣服照片</div>
-        <input type="file" id="clothImgInp" accept="image/*" capture="environment" onchange="previewClothImg(this)" style="display:none"/>
-        <div class="row"><label>单品名称</label><input id="cfName" placeholder="例如：天蓝色羊毛衫"/></div>
-        <div class="row"><label>分类</label>
-          <select id="cfCat"><option>上衣</option><option>下装</option><option>外套</option><option>鞋</option><option>配饰</option></select>
-        </div>
-        <div class="row"><label>颜色</label><input id="cfColor" placeholder="例如：天蓝 / 米白 / 黑"/></div>
-        <div class="row"><label>尺寸</label><input id="cfSize" placeholder="例如：M 码 / 均码 / 38"/></div>
-        <div class="row"><label>备注 / 关于这件衣服的回忆</label><textarea id="cfNote" placeholder="例如：在东京旅行时买的，每次穿都想起那条街道…"></textarea></div>
-      </div>
-      <div class="mo-foot"><button class="saveb" onclick="saveCloth()">💾 加入我的衣橱</button></div>
     </div>
   </div>
 
-  <!-- ===== 弹窗：衣服详情 ===== -->
-  <div class="ov" id="ovDetail">
-    <div class="mo">
-      <div class="mo-scroll">
-        <h3><span id="dName">--</span> <button class="cls" onclick="closeOv('ovDetail')">✕</button></h3>
-        <div id="dImg" style="text-align:center;margin-bottom:10px;font-size:80px;"></div>
-        <div class="row"><label>分类</label><input id="dCat" readonly/></div>
-        <div class="row"><label>颜色</label><input id="dColor" readonly/></div>
-        <div class="row"><label>尺寸</label><input id="dSize" readonly/></div>
-        <div class="row"><label>备注 / 回忆</label><div id="dNote" style="font-size:13px;color:var(--tx);padding:10px;background:var(--bg1);border-radius:12px;min-height:40px;white-space:pre-wrap;"></div></div>
-      </div>
-      <div class="mo-foot">
-        <div style="display:flex;gap:8px;">
-          <button class="saveb" style="flex:1;background:var(--ln);color:var(--tx);" onclick="deleteCloth(currentDetailId)">🗑 删除</button>
-          <button class="saveb" style="flex:1;" onclick="closeOv('ovDetail')">关闭</button>
+  <!-- Tab2 AI 穿搭 -->
+  <div class="tab-panel" id="s2">
+    <div class="page-header">
+      <h2>✨ AI 穿搭师</h2>
+      <p>用你自己的话，让 AI 从你的衣橱里搭配一套</p>
+    </div>
+    <div class="content" style="display:flex;flex-direction:column;">
+      <div class="ai-layout" style="flex:1;">
+        <div class="ai-chat-area" style="display:flex;flex-direction:column;">
+          <div class="chat" id="chat" style="flex:1;overflow-y:auto;max-height:calc(100vh - 280px);">
+            <div class="bub ai">嗨，我是你的 AI 穿搭师 ☁️<br/>告诉我今天要去什么场合、想要什么风格，我从你的衣橱里帮你搭配～</div>
+          </div>
+          <div class="cibar" id="cibar">
+            <input id="ci" placeholder="和 AI 说说今天想穿什么…" onkeydown="if(event.key==='Enter')sendMsg()"/>
+            <button onclick="sendMsg()">↑</button>
+          </div>
+        </div>
+        <div class="ai-sidebar">
+          <div class="quick-asks">
+            <h4>💡 试试这样问</h4>
+            <div class="qr">
+              <div class="q" onclick="askAI('明天约会，帮我搭温柔一点的')">💕 约会温柔风</div>
+              <div class="q" onclick="askAI('下雨天通勤，要清爽好走')">🌧️ 雨天通勤</div>
+              <div class="q" onclick="askAI('周末出去玩，活泼一点')">🎈 周末出游</div>
+              <div class="q" onclick="askAI('参加朋友婚礼，要精致好看')">💒 参加婚礼</div>
+              <div class="q" onclick="askAI('日常上班，简约干练')">💼 日常通勤</div>
+              <div class="q" onclick="askAI('闺蜜聚会，时尚气质')">🥂 闺蜜聚会</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
-
-  <!-- 调试面板（默认隐藏，点击右上角小圆点显示） -->
-  <div id="debugBar" style="position:absolute;left:8px;right:8px;bottom:76px;z-index:95;background:rgba(0,0,0,.78);color:#fff;border-radius:10px;padding:6px 10px;font-size:9px;font-family:monospace;display:none;gap:12px;flex-wrap:wrap;pointer-events:none;opacity:.85;">
-    <span id="dbVer">--</span>
-    <span id="dbClothes">--</span>
-    <span id="dbPosts">--</span>
-    <span id="dbLS">--</span>
+  <!-- Tab3 社区 -->
+  <div class="tab-panel" id="s3">
+    <div class="page-header">
+      <h2>🌷 穿搭广场</h2>
+      <p>分享你的穿搭，一起变美</p>
+    </div>
+    <div class="content">
+      <div class="post-grid" id="postFeed"></div>
+    </div>
   </div>
-  <div id="debugToggle" onclick="toggleDebug()" style="position:absolute;right:10px;bottom:78px;z-index:96;width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,.25);cursor:pointer;" title="调试"></div>
+</main>
 
-  <!-- 隐藏的 avatar 文件选择 -->
-  <input type="file" id="avtInp" accept="image/*" capture="environment" onchange="onAvatarPicked(this)" style="display:none"/>
+<!-- ============ 弹窗：添加衣服 ============ -->
+<div class="ov" id="ovCloth">
+  <div class="mo">
+    <h3>➕ 添加单品 <button class="cls" onclick="closeOv('ovCloth')">✕</button></h3>
+    <div class="imgup" onclick="document.getElementById('clothImgInp').click()" id="clothImgPrev">📸 点击上传衣服照片</div>
+    <input type="file" id="clothImgInp" accept="image/*" onchange="previewClothImg(this)" style="display:none"/>
+    <div class="row"><label>单品名称</label><input id="cfName" placeholder="例如：天蓝色羊毛衫"/></div>
+    <div class="row"><label>分类</label>
+      <select id="cfCat"><option>上衣</option><option>下装</option><option>外套</option><option>鞋</option><option>配饰</option></select>
+    </div>
+    <div class="row"><label>颜色</label><input id="cfColor" placeholder="例如：天蓝 / 米白 / 黑"/></div>
+    <div class="row"><label>尺寸</label><input id="cfSize" placeholder="例如：M 码 / 均码 / 38"/></div>
+    <div class="row"><label>备注 / 关于这件衣服的回忆</label><textarea id="cfNote" placeholder="例如：在东京旅行时买的，每次穿都想起那条街道…"></textarea></div>
+    <button class="saveb" onclick="saveCloth()">💾 加入我的衣橱</button>
+  </div>
 </div>
+
+<!-- ============ 弹窗：衣服详情 ============ -->
+<div class="ov" id="ovDetail">
+  <div class="mo">
+    <h3><span id="dName">--</span> <button class="cls" onclick="closeOv('ovDetail')">✕</button></h3>
+    <div id="dImg" style="text-align:center;margin-bottom:12px;font-size:80px;"></div>
+    <div class="row"><label>分类</label><input id="dCat" readonly/></div>
+    <div class="row"><label>颜色</label><input id="dColor" readonly/></div>
+    <div class="row"><label>尺寸</label><input id="dSize" readonly/></div>
+    <div class="row"><label>备注 / 回忆</label><div id="dNote" style="font-size:14px;color:var(--tx);padding:12px;background:var(--bg1);border-radius:14px;min-height:44px;white-space:pre-wrap;"></div></div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="saveb" style="flex:1;background:var(--ln);color:var(--tx);" onclick="deleteCloth(currentDetailId)">🗑 删除</button>
+      <button class="saveb" style="flex:1;" onclick="closeOv('ovDetail')">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- 隐藏文件选择 -->
+<input type="file" id="avtInp" accept="image/*" onchange="onAvatarPicked(this)" style="display:none"/>
 
 <script>
 /* ==========================================================
-   云衣橱 交互脚本 — localStorage + AI 图像生成
+   云衣橱 网页版 交互脚本
+   - 与手机版共享相同的 localStorage 数据格式
    - AI 出图: Pollinations.ai (免费, 无需 API Key)
    - 预置 12 件虚拟衣服 + 6 条社区帖子
    ========================================================== */
@@ -488,8 +634,8 @@ const DEMO_POSTS = [
   {id:2006,uname:'安安',avatar:'',time:'06-06 10:05',title:'✨ 闺蜜聚会·气质满分',items:'天蓝针织开衫 + 卡其色阔腿裤 + 奶油白帆布鞋 + 奶油色托特包 + 薄荷绿真丝围巾',imagePrompt:'',likes:[],comments:[{name:'木木',text:'这一套我要原样复刻！'}],showComments:false},
 ];
 
-// ---- 数据存储 ----
-var APP_VERSION='v4.0';
+// ---- 数据存储（与手机版共享 localStorage） ----
+var APP_VERSION='v4.0-web';
 const S={
   get ver(){return localStorage.getItem('dataVersion')||'';},
   set ver(v){localStorage.setItem('dataVersion',v);},
@@ -506,13 +652,11 @@ const S={
 let currentDetailId=null;
 
 // ===================== AI 图像生成 =====================
-// 使用 Pollinations.ai 免费 API（无需 API Key）
 function aiImage(prompt,w,h){
   w=w||512;h=h||640;
   return 'https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width='+w+'&height='+h+'&nologo=true';
 }
 
-// AI 生成穿搭效果图 — 用真实衣服属性生成详细 prompt
 function outfitImagePrompt(items, clothesList){
   var desc='';
   for(var i=0;i<clothesList.length;i++){
@@ -522,7 +666,6 @@ function outfitImagePrompt(items, clothesList){
   return 'fashion outfit flat lay photography, featuring ' + desc + 'arranged beautifully on a soft pastel background, minimalist korean fashion style, soft natural lighting, clean aesthetic, high quality, gentle colors';
 }
 
-// AI 生成治愈风穿搭场景图 — 用用户形象+具体衣服描述
 function outfitScenePrompt(items, clothesList, occasion, style){
   var clothingDesc='';
   for(var i=0;i<clothesList.length;i++){
@@ -536,50 +679,31 @@ function outfitScenePrompt(items, clothesList, occasion, style){
 
 // ===================== 初始化 =====================
 (function init(){
+  // 网页版和手机版共用数据，版本号不同时不清除数据（已由手机版管理）
   var oldVer=S.ver;
-  if(oldVer!==APP_VERSION){
-    // 版本升级 — 清除所有旧数据，重新播种
-    var savedAvt=S.avt;
-    var savedName=S.uname;
-    // 彻底清空
-    localStorage.clear();
-    // 恢复版本号
+  if(oldVer&&oldVer!==APP_VERSION&&oldVer.indexOf('v4.0')===0){
+    // 从手机版 v4.0 迁移，保留数据只更新版本号
     S.ver=APP_VERSION;
-    // 播种
-    S.clothes=DEMO_CLOTHES;
-    S.posts=DEMO_POSTS;
-    // 恢复用户数据
-    if(savedAvt)S.avt=savedAvt;
-    if(savedName&&savedName!=='小晴')S.uname=savedName;
-    toast('✨ 已更新到 '+APP_VERSION+'，预置 12 件衣服 + 6 条社区帖子');
+    toast('✨ 网页版已就绪，与手机版共享数据');
+  }else if(!oldVer){
+    // 首次使用
+    S.ver=APP_VERSION;
+    if(S.clothes.length===0){S.clothes=DEMO_CLOTHES;}
+    if(S.posts.length===0){S.posts=DEMO_POSTS;}
+    toast('✨ 欢迎使用云衣橱网页版！预置 12 件衣服 + 6 条社区帖子');
   }else{
-    // 正常启动：数据为空时才播种
+    // 正常启动
     if(S.clothes.length===0){S.clothes=DEMO_CLOTHES;}
     if(S.posts.length===0){S.posts=DEMO_POSTS;}
   }
 
   loadAvatar();
-  document.getElementById('uname').textContent=S.uname;
+  document.getElementById('sdUname').textContent=S.uname;
   renderCloset('全部',document.querySelector('#ftags .chip'));
   renderCommunity();
-  updateDebug();
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('./sw.js').then(function(reg){
-      reg.onupdatefound=function(){
-        var newSW=reg.installing;
-        if(newSW){
-          newSW.onstatechange=function(){
-            if(newSW.state==='installed'&&navigator.serviceWorker.controller){
-              toast('有新版本可用，刷新页面即可更新 🌤️');
-            }
-          };
-        }
-      };
-    }).catch(function(){});
-  }
 })();
 
-// ---- 手动重置演示数据 ----
+// ---- 手动重置 ----
 function resetAllData(){
   if(!confirm('确定要重置所有数据吗？这将清除你的头像和自定义衣服，恢复到初始演示状态。'))return;
   localStorage.clear();
@@ -587,7 +711,7 @@ function resetAllData(){
   S.clothes=DEMO_CLOTHES;
   S.posts=DEMO_POSTS;
   loadAvatar();
-  document.getElementById('uname').textContent='小晴';
+  document.getElementById('sdUname').textContent='小晴';
   currentFilter='全部';
   var chips=document.querySelectorAll('#ftags .chip');
   for(var i=0;i<chips.length;i++){chips[i].classList.remove('on');}
@@ -595,26 +719,24 @@ function resetAllData(){
   if(firstChip)firstChip.classList.add('on');
   renderCloset('全部');
   renderCommunity();
-  updateDebug();
   toast('✨ 已重置！12 件衣服 + 6 条社区帖子已就绪');
 }
 
-// ---- 头像（上传 + AI 生成） ----
+// ---- 头像 ----
 function loadAvatar(){
-  const ae=document.getElementById('avtEmoji'),ai=document.getElementById('avtImg');
+  var ae=document.getElementById('sdAvtEmoji'),ai=document.getElementById('sdAvtImg');
   if(S.avt){ae.style.display='none';ai.style.display='block';ai.src=S.avt;}
   else{ae.style.display='block';ai.style.display='none';}
 }
 function uploadAvatar(){document.getElementById('avtInp').click();}
 function onAvatarPicked(inp){
   if(!inp.files[0])return;
-  const r=new FileReader();
+  var r=new FileReader();
   r.onload=function(){
     S.avt=r.result;loadAvatar();
     toast('形象已更新！正在 AI 生成虚拟形象… 🎨');
-    // AI 生成 2D 虚拟形象
-    const aiUrl=aiImage('cute 2D anime style avatar portrait of a young asian woman, soft pastel colors, clean simple illustration, full body fashion illustration, gentle smile, studio ghibli inspired, kawaii style, white background',400,600);
-    const img=new Image();
+    var aiUrl=aiImage('cute 2D anime style avatar portrait of a young asian woman, soft pastel colors, clean simple illustration, full body fashion illustration, gentle smile, studio ghibli inspired, kawaii style, white background',400,600);
+    var img=new Image();
     img.onload=function(){S.avt=aiUrl;loadAvatar();toast('AI 虚拟形象已生成 ✨');};
     img.onerror=function(){toast('AI 生成中，当前使用原图。稍后可在头像区查看');};
     img.src=aiUrl;
@@ -634,7 +756,7 @@ function renderCloset(filter,el){
   if(filter)currentFilter=filter;
   filter=currentFilter;
   var g=document.getElementById('cgrid');
-  if(!g){updateDebug();return;}
+  if(!g)return;
   var list=S.clothes;
   if(filter!=='全部'){
     list=[];
@@ -646,7 +768,7 @@ function renderCloset(filter,el){
   var html='';
   for(var k=0;k<list.length;k++){
     var c=list[k];
-    var imgHtml=c.image?'<img src="'+c.image+'" />':'<span>'+c.emoji+'</span>';
+    var imgHtml=c.image?'<img src="'+c.image+'" alt="'+c.name+'"/>':'<span>'+c.emoji+'</span>';
     html+='<div class="cloth" onclick="openDetail('+c.id+')">'
       +'<div class="thumb" style="background:'+(c.grad||'linear-gradient(135deg,#eaf6ff,#c2e9fb)')+'">'+imgHtml+'</div>'
       +'<div class="name">'+c.name+'</div>'
@@ -658,7 +780,7 @@ function renderCloset(filter,el){
   if(cc)cc.textContent=S.clothes.length;
 }
 
-// ---- 添加衣服弹窗 ----
+// ---- 添加衣服 ----
 let clothEditImg=null;
 function openAddCloth(){
   document.getElementById('clothImgPrev').innerHTML='📸 点击上传衣服照片';
@@ -673,7 +795,7 @@ function openAddCloth(){
 function previewClothImg(inp){
   if(!inp.files[0])return;
   var r=new FileReader();
-  r.onload=function(){clothEditImg=r.result;document.getElementById('clothImgPrev').innerHTML='<img src="'+r.result+'"/>';};
+  r.onload=function(){clothEditImg=r.result;document.getElementById('clothImgPrev').innerHTML='<img src="'+r.result+'" alt="预览"/>';};
   r.readAsDataURL(inp.files[0]);
   inp.value='';
 }
@@ -707,7 +829,7 @@ function openDetail(id){
   var c=S.clothes.find(function(c){return c.id===id;});if(!c)return;
   currentDetailId=c.id;
   document.getElementById('dName').textContent=c.name;
-  document.getElementById('dImg').innerHTML=c.image?'<img src="'+c.image+'" style="max-width:100%;max-height:200px;border-radius:14px;object-fit:cover"/>':(c.emoji||'👗');
+  document.getElementById('dImg').innerHTML=c.image?'<img src="'+c.image+'" style="max-width:100%;max-height:240px;border-radius:16px;object-fit:cover" alt=""/>':(c.emoji||'👗');
   document.getElementById('dCat').value=c.cat||c.category||'';
   document.getElementById('dColor').value=c.color||'';
   document.getElementById('dSize').value=c.size||'';
@@ -727,13 +849,13 @@ function closeOv(id){document.getElementById(id).classList.remove('show');}
 
 // ---- Tab 切换 ----
 function switchTab(id,el){
-  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.tab-panel').forEach(function(s){s.classList.remove('on');});
   document.getElementById(id).classList.add('on');
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  document.querySelectorAll('.sd-nav-item').forEach(function(t){t.classList.remove('on');});
   el.classList.add('on');
-  document.getElementById('cibar').style.display=(id==='s2')?'flex':'none';
-  // 切到社区时重新渲染
   if(id==='s3')renderCommunity();
+  // 切到 AI 穿搭时滚动聊天
+  if(id==='s2')scrollChat();
 }
 
 // ===================== AI 穿搭 =====================
@@ -750,11 +872,10 @@ function addBub(text,who){
   document.getElementById('chat').appendChild(d);scrollChat();
 }
 
-// ---- 解析用户的穿搭需求 ----
 function analyzeRequest(text){
   var result={occasion:'日常出行',style:'温柔清新',mood:''};
   var t=text||'';
-  if(t.indexOf('约会')>=0||t.indexOf('约会')>=0){result.occasion='浪漫约会';result.style='温柔甜美';}
+  if(t.indexOf('约会')>=0){result.occasion='浪漫约会';result.style='温柔甜美';}
   else if(t.indexOf('通勤')>=0||t.indexOf('上班')>=0||t.indexOf('面试')>=0){result.occasion='通勤办公';result.style='简约干练';}
   else if(t.indexOf('出游')>=0||t.indexOf('出去玩')>=0||t.indexOf('周末')>=0){result.occasion='周末出游';result.style='活泼开朗';}
   else if(t.indexOf('婚礼')>=0||t.indexOf('宴会')>=0||t.indexOf('正式')>=0){result.occasion='正式场合';result.style='精致优雅';}
@@ -769,7 +890,6 @@ function analyzeRequest(text){
   return result;
 }
 
-// ---- AI 智能选衣 + 生成穿搭 ----
 function think(userText){
   var area=document.getElementById('chat');
   var ld=document.createElement('div');ld.className='ld';
@@ -785,7 +905,6 @@ function think(userText){
       return;
     }
 
-    // 分析用户需求
     var req=analyzeRequest(userText||lastUserRequest);
 
     // 按分类分组
@@ -799,38 +918,14 @@ function think(userText){
       else accs.push(c);
     }
 
-    // 智能选择：优先配色协调
     var pick=[];
-    // 1. 选上衣
-    if(tops.length>0){
-      tops.sort(function(){return Math.random()-0.5;});
-      pick.push(tops[0]);
-    }
-    // 2. 选下装（尝试配色协调）
-    if(bottoms.length>0){
-      bottoms.sort(function(){return Math.random()-0.5;});
-      pick.push(bottoms[0]);
-    }
-    // 3. 选鞋
-    if(shoes.length>0){
-      shoes.sort(function(){return Math.random()-0.5;});
-      pick.push(shoes[0]);
-    }
-    // 4. 偶尔加外套
-    if(outers.length>0&&Math.random()>0.5){
-      outers.sort(function(){return Math.random()-0.5;});
-      pick.push(outers[0]);
-    }
-    // 5. 偶尔加配饰
-    if(accs.length>0&&Math.random()>0.6){
-      accs.sort(function(){return Math.random()-0.5;});
-      pick.push(accs[0]);
-    }
-
-    // 保证不超过5件
+    if(tops.length>0){tops.sort(function(){return Math.random()-0.5;});pick.push(tops[0]);}
+    if(bottoms.length>0){bottoms.sort(function(){return Math.random()-0.5;});pick.push(bottoms[0]);}
+    if(shoes.length>0){shoes.sort(function(){return Math.random()-0.5;});pick.push(shoes[0]);}
+    if(outers.length>0&&Math.random()>0.5){outers.sort(function(){return Math.random()-0.5;});pick.push(outers[0]);}
+    if(accs.length>0&&Math.random()>0.6){accs.sort(function(){return Math.random()-0.5;});pick.push(accs[0]);}
     if(pick.length>5)pick=pick.slice(0,5);
 
-    // 生成标题和描述
     var itemsText='';
     for(var j=0;j<pick.length;j++){itemsText+=pick[j].name;if(j<pick.length-1)itemsText+=' + ';}
     if(!itemsText)itemsText='先去衣橱添加几件衣服吧 ☁️';
@@ -839,20 +934,17 @@ function think(userText){
     var occasion=req.occasion;
     var style=req.style;
 
-    // 生成 AI 穿搭图片 prompt（使用真实衣服属性）
     var aiPrompt=outfitScenePrompt(itemsText, pick, occasion, style);
     var imgUrl=aiImage(aiPrompt,512,640);
     var flatPrompt=outfitImagePrompt(itemsText, pick);
     var flatUrl=aiImage(flatPrompt,512,400);
 
-    // 构建展示卡片
     var pickEmojis='';
     for(var e=0;e<pick.length;e++){pickEmojis+=pick[e].emoji+' ';}
 
     ld.remove();
     var card=document.createElement('div');card.className='ocard';
 
-    // 加载中占位
     var loadingHTML='<div style="position:absolute;inset:0;background:linear-gradient(160deg,var(--ga),var(--gb));display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;">'
       +'<div class="big">'+pickEmojis+'</div>'
       +'<div class="cap">✨ AI 正在生成穿搭效果图…</div>'
@@ -873,14 +965,12 @@ function think(userText){
     area.appendChild(card);
     scrollChat();
 
-    // 异步加载 AI 场景图
     var testImg=new Image();
     testImg.onload=function(){
       var oimg=card.querySelector('.oimg');
       oimg.style.backgroundImage='url('+imgUrl+')';
       oimg.style.backgroundSize='cover';
       oimg.style.backgroundPosition='center';
-      // 隐藏加载层
       var overlay=oimg.querySelector('div');
       if(overlay)overlay.style.display='none';
       var flatImg=oimg.querySelector('img');
@@ -895,21 +985,22 @@ function think(userText){
     outfitIdx++;
   },1800);
 }
-function scrollChat(){var s=document.getElementById('s2');setTimeout(function(){s.scrollTop=s.scrollHeight;},50);}
+function scrollChat(){
+  var chat=document.getElementById('chat');
+  if(chat)setTimeout(function(){chat.scrollTop=chat.scrollHeight;},50);
+}
 function switchToAITab(){
-  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.tab-panel').forEach(function(s){s.classList.remove('on');});
   document.getElementById('s2').classList.add('on');
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
-  document.querySelector('.tab[data-t="s2"]').classList.add('on');
-  document.getElementById('cibar').style.display='flex';
+  document.querySelectorAll('.sd-nav-item').forEach(function(t){t.classList.remove('on');});
+  document.querySelector('.sd-nav-item[data-t="s2"]').classList.add('on');
 }
 
-// ---- 保存搭配并分享到社区 ----
+// ---- 分享到社区 ----
 function shareOutfit(titleEnc, itemsEnc, promptEnc){
   var title=decodeURIComponent(titleEnc);
   var items=decodeURIComponent(itemsEnc);
   var prompt=decodeURIComponent(promptEnc||'');
-  // 生成配图 URL
   var imgPrompt=prompt||outfitScenePrompt(items,'');
   var imgUrl=aiImage(imgPrompt,512,640);
   var post={
@@ -926,24 +1017,21 @@ function renderCommunity(){
   var feed=document.getElementById('postFeed');
   if(!feed)return;
   var ps=S.posts;
-  // 为空时恢复预置数据
   if(!ps||ps.length===0){S.posts=DEMO_POSTS;ps=S.posts;}
 
   feed.innerHTML=ps.map(function(p,i){
-    var avtHtml=p.avatar?'<img src="'+p.avatar+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>':'🧍‍♀️';
+    var avtHtml=p.avatar?'<img src="'+p.avatar+'" alt=""/>':'🧍‍♀️';
     var itemsArr=p.items.split(' + ');
     var likeCount=p.likes.length;
     var commentCount=p.comments.length;
     var isLiked=p.likes.indexOf('me')>=0;
-
-    // 为每条帖子生成 AI 穿搭效果图（缓存友好的 URL）
     var postImg=p.imageUrl||aiImage(outfitScenePrompt(p.items,''),512,640);
 
     return '<div class="post">'
       +'<div class="phead"><div class="pavt">'+avtHtml+'</div><div><div class="pname">'+p.uname+'</div><div class="ptime">'+p.time+'</div></div></div>'
       +'<div class="pbody">'+p.title+'</div>'
       +'<div class="pimg" style="background:linear-gradient(160deg,var(--ga),var(--gb))">'
-      +'<img src="'+postImg+'" style="width:100%;height:100%;object-fit:cover;border-radius:14px" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'<span style=font-size:50px>👗</span>\'" alt="穿搭效果图"/>'
+      +'<img src="'+postImg+'" style="width:100%;height:100%;object-fit:cover;border-radius:14px" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'<span style=font-size:56px>👗</span>\'" alt="穿搭效果图"/>'
       +'</div>'
       +'<div class="pitems">'+itemsArr.map(function(it){return '<span class="pi">'+it+'</span>';}).join('')+'</div>'
       +'<div class="pbtns">'
@@ -958,7 +1046,6 @@ function renderCommunity(){
   }).join('');
 }
 
-// 社区操作函数（用 -Post 后缀区分，避免和旧版冲突）
 function toggleLikePost(i){
   var ps=S.posts;var p=ps[i];if(!p)return;
   var idx=p.likes.indexOf('me');
@@ -984,7 +1071,7 @@ function addCommentPost(i){
 
 // ---- 主题 ----
 function setTheme(name,el){
-  document.getElementById('phone').setAttribute('data-theme',name);
+  document.documentElement.setAttribute('data-theme',name);
   document.querySelectorAll('.tdot').forEach(function(d){d.classList.remove('on');});el.classList.add('on');
 }
 
@@ -999,40 +1086,24 @@ var ttimer;
 function toast(msg){
   var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
   clearTimeout(ttimer);ttimer=setTimeout(function(){t.classList.remove('show');},2200);
-  updateDebug();
 }
 
-// ---- 调试面板 ----
-function updateDebug(){
-  var db=document.getElementById('debugBar');
-  if(!db)return;
-  try{
-    var cs=JSON.parse(localStorage.getItem('clothes')||'[]');
-    var ps=JSON.parse(localStorage.getItem('posts')||'[]');
-    var keys=Object.keys(localStorage);
-    document.getElementById('dbVer').textContent='ver:'+APP_VERSION+'/'+(localStorage.getItem('dataVersion')||'none');
-    document.getElementById('dbClothes').textContent='衣服:'+cs.length+'件';
-    document.getElementById('dbPosts').textContent='帖子:'+ps.length+'条';
-    document.getElementById('dbLS').textContent='LS键:'+keys.length+'('+keys.join(',').slice(0,50)+')';
-  }catch(e){
-    db.textContent='DEBUG ERROR: '+e.message;
-  }
-}
-function toggleDebug(){
-  var db=document.getElementById('debugBar');
-  if(!db)return;
-  db.style.display=db.style.display==='flex'?'none':'flex';
-}
-
-// 用户名保存
-document.getElementById('uname').addEventListener('blur',function(){
+// ---- 用户名保存 ----
+document.getElementById('sdUname').addEventListener('blur',function(){
   S.uname=this.textContent.trim()||'小晴';
   this.textContent=S.uname;
 });
 
-// 点击弹窗外关闭
+// ---- 点击弹窗外关闭 ----
 document.getElementById('ovCloth').addEventListener('click',function(e){if(e.target===this)closeOv('ovCloth');});
 document.getElementById('ovDetail').addEventListener('click',function(e){if(e.target===this)closeOv('ovDetail');});
+
+// ---- 键盘快捷键 ----
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    closeOv('ovCloth');closeOv('ovDetail');
+  }
+});
 </script>
 
 </body>
