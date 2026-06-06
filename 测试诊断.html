@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>衣橱测试</title>
+<style>
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#eaf6ff;padding:20px;}
+h2{color:#2d4a5e;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:400px;}
+.card{background:#fff;border-radius:16px;padding:12px;text-align:center;box-shadow:0 4px 14px rgba(124,196,236,.22);}
+.card .thumb{width:100%;aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:6px;}
+.card .name{font-size:12px;font-weight:700;color:#2d4a5e;}
+.card .tag{font-size:10px;color:#6f93a8;}
+.info{padding:12px 16px;background:#fff;border-radius:12px;margin-bottom:16px;font-size:14px;color:#2d4a5e;}
+.btn{padding:8px 16px;border:none;border-radius:10px;background:#7cc4ec;color:#fff;font-weight:700;cursor:pointer;margin:4px;}
+</style>
+</head>
+<body>
+
+<h2>🧪 衣橱数据诊断</h2>
+
+<div class="info" id="info">检测中…</div>
+
+<div>
+<button class="btn" onclick="seed()">🔧 强制播种 12 件</button>
+<button class="btn" onclick="wipe()">🗑 清空数据</button>
+<button class="btn" onclick="check()">🔍 重新检测</button>
+</div>
+
+<h3 style="margin-top:20px;">📦 当前衣橱内容：</h3>
+<div class="grid" id="grid"></div>
+
+<script>
+var DEMO = [
+  {id:1001,name:'白色棉质衬衫',cat:'上衣',color:'白色',emoji:'👚',grad:'linear-gradient(135deg,#fdfbfb,#d5d8dc)'},
+  {id:1002,name:'天蓝针织开衫',cat:'上衣',color:'天蓝',emoji:'🧥',grad:'linear-gradient(135deg,#a1c4fd,#c2e9fb)'},
+  {id:1003,name:'碎花雪纺连衣裙',cat:'上衣',color:'淡粉',emoji:'👗',grad:'linear-gradient(135deg,#fbc2eb,#fda7df)'},
+  {id:1004,name:'浅蓝直筒牛仔裤',cat:'下装',color:'浅蓝',emoji:'👖',grad:'linear-gradient(135deg,#a1c4fd,#d4e7fb)'},
+  {id:1005,name:'卡其色阔腿裤',cat:'下装',color:'卡其',emoji:'👖',grad:'linear-gradient(135deg,#e6dada,#c9b99a)'},
+  {id:1006,name:'米色中长款风衣',cat:'外套',color:'米色',emoji:'🧥',grad:'linear-gradient(135deg,#f6d365,#f8c776)'},
+  {id:1007,name:'奶油白帆布鞋',cat:'鞋',color:'白色',emoji:'👟',grad:'linear-gradient(135deg,#fdfbfb,#e2e8ec)'},
+  {id:1008,name:'裸色尖头平底鞋',cat:'鞋',color:'裸色',emoji:'🥿',grad:'linear-gradient(135deg,#fceabb,#f5c9a0)'},
+  {id:1009,name:'奶油色托特包',cat:'配饰',color:'米白',emoji:'👜',grad:'linear-gradient(135deg,#fff5e6,#f0e0c8)'},
+  {id:1010,name:'薄荷绿真丝围巾',cat:'配饰',color:'薄荷绿',emoji:'🧣',grad:'linear-gradient(135deg,#a8edea,#cdeff0)'},
+  {id:1011,name:'珍珠白小方包',cat:'配饰',color:'珍珠白',emoji:'👜',grad:'linear-gradient(135deg,#f5f0ff,#e8e0f0)'},
+  {id:1012,name:'黑色细腰带',cat:'配饰',color:'黑色',emoji:'〰️',grad:'linear-gradient(135deg,#e8e8e8,#cccccc)'},
+];
+
+function getClothes(){
+  try{return JSON.parse(localStorage.getItem('clothes')||'[]');}catch(e){return[];}
+}
+function setClothes(v){localStorage.setItem('clothes',JSON.stringify(v));}
+
+function seed(){
+  setClothes(DEMO);
+  render();
+  updateInfo();
+}
+function wipe(){
+  localStorage.removeItem('clothes');
+  render();
+  updateInfo();
+}
+function check(){
+  updateInfo();
+  render();
+}
+
+function updateInfo(){
+  var cs=getClothes();
+  var el=document.getElementById('info');
+  var keys=Object.keys(localStorage).filter(function(k){return k!=='clothes';});
+  el.innerHTML=''
+    +'📊 localStorage 状态：<br/>'
+    +'• <b>clothes</b> 键存在：'+(localStorage.getItem('clothes')?'✅ 是':'❌ 否')+'<br/>'
+    +'• clothes 数量：<b>'+cs.length+'</b> 件<br/>'
+    +'• localStorage 总键数：'+Object.keys(localStorage).length+'<br/>'
+    +'• 其他键：'+(keys.length?keys.join(', '):'(无)')+'<br/>'
+    +'• <b>诊断结论：</b>'+(cs.length===12?'✅ 12件衣服正常':'❌ 衣服数量不对('+cs.length+')，需播种');
+}
+
+function render(){
+  var cs=getClothes();
+  var g=document.getElementById('grid');
+  if(cs.length===0){
+    g.innerHTML='<div style="grid-column:1/-1;padding:24px;text-align:center;color:#999;">衣橱是空的，点「强制播种」载入12件演示衣服</div>';
+    return;
+  }
+  g.innerHTML=cs.map(function(c){
+    return '<div class="card">'
+      +'<div class="thumb" style="background:'+c.grad+'"><span>'+c.emoji+'</span></div>'
+      +'<div class="name">'+c.name+'</div>'
+      +'<div class="tag">'+c.cat+' · '+c.color+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+// 初始化
+(function(){
+  var cs=getClothes();
+  if(cs.length===0)setClothes(DEMO);
+  updateInfo();
+  render();
+})();
+</script>
+</body>
+</html>
